@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+		crossorigin="anonymous"></script>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+		integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+		integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+		crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
+		rel="stylesheet">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
+		rel="stylesheet">
+	<style>
+		*,
+		p {
+			margin: 0;
+			padding: 0;
+			font-family: 'Roboto', sans-serif;
+			/* font-family: 'Ubuntu', sans-serif; */
+		}
+		#task,
+		#task:focus {
+			border: none;
+			padding: 10px;
+			border-radius: 50px;
+		}
+		body {
+			background-color: #ddd;
+		}
+
+		.btnn {
+			background: linear-gradient(186.44deg, #1D2939 0.72%, #475467 81.39%);
+			color: whitesmoke;
+			border: none !important;
+			padding: 0px 15px;
+			border-radius: 100px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-size: 21px;
+		}
+		#task:focus{
+			border: none;
+			outline: none;
+		}
+		.tasktext {
+			display: flex;
+			border: 1px solid #ccc;
+			font-weight: 400;
+			font-size: 21px;
+			background: white;
+			padding: 10px;
+			border-radius: 6px;
+			align-items: center;
+			margin: 0;
+			transition: .2s ease-in-out;
+		}
+		.tasktext:hover {
+			font-size: 23px;
+			border-radius: 15px;
+			padding: 12px;
+			background: linear-gradient(186.44deg, #475467 0.72%, #1D2939 81.39%);
+			color: whitesmoke;
+		}
+		.iconevent {
+			text-align: right;
+			margin-right: 20px
+		}
+		.srno {
+			min-width: 8%;
+		}
+		.inputdes{
+			background-color: white;
+			padding:5px 5px 5px 5px;
+			width: 600px;
+			border-radius:10px;
+		}
+	</style>
+	<title>To-Do List</title>
+</head>
+
+<body>
+	<div class="d-flex justify-content-center flex-column m-auto" style="width: 600px;">
+		<div class="d-flex justify-content-center border m-auto mt-5 gap-3 inputdes">
+			<input type="text" name="task" id="task" class="w-100" placeholder="Type Your Task" />
+			<button class="btnn"><i class="fa-solid fa-plus"></i></button>
+		</div>
+		<p style="margin-left: 10px;margin-top: 5px;font-weight: 400;" class="text-danger" id="errorMsg">Please type your task first!</p>
+	</div>
+	<div class="container mt-3 mb-5 w-100 d-flex justify-content-center flex-column">
+		<p class="text-center h1" style="color: transparent;background: linear-gradient(186.44deg, #475467 0.72%, #1D2939 81.39%);-webkit-background-clip: text;">My Tasks</p>
+		<p class="text-center noTask" style="color: #475467;">No Tasks added</p>
+		<div id="addedtasks" class="w-50 mt-3 d-flex flex-wrap m-auto gap-3"></div>
+	</div>
+	<script>
+		var srNo = 0;
+		$(document).ready(function () {
+			loadTasks();
+			$('#task').focus();
+		});
+
+		$('#errorMsg').hide();
+		$(".btnn").on("click", function () {
+			var tasks = $("#task").val();
+			if (tasks != "") {
+				$('.noTask').hide();
+				var newElement = $('<div id="childTexts" class="tasktext w-100">').append('<p class="w-100" contenteditable="false">' + tasks + '</p>')
+					.append('<i class="fa-solid fa-pen-to-square w-100 text-success iconevent edit"></i>')
+					.append('<i class="fas fa-times text-danger iconevent remove" style="font-size:28px"></i>')
+				$("#addedtasks").append(newElement);
+				var newText = "";
+				$('#task').val(newText);
+				$('#task').focus();
+				srNo++;
+				saveTasks();
+				$('#errorMsg').hide();
+				$('.inputdes').removeClass('border-danger')
+				$('.fa-plus').removeClass('text-danger')
+			} else {
+				$('#errorMsg').show();
+				$('.inputdes').addClass('border-danger')
+				$('.fa-plus').addClass('text-danger')
+				$('#task').focus();
+			}
+		});
+
+		$(document).on("click", ".remove", function () {
+			if (srNo > 0) {
+				srNo--;
+			}
+			if(srNo < 1){
+				$('.noTask').show();
+			}
+			$(this).closest('.tasktext').remove();
+			saveTasks();
+		});
+
+		$(document).on("click", ".edit", function () {
+			var $pElement = $(this).siblings('p');
+			var isEditable = $pElement.prop("contenteditable") === "true";
+			isEditable = !isEditable;
+			$pElement.prop("contenteditable", isEditable).focus();
+
+			var textNode = $pElement[0].childNodes[0];
+			var range = document.createRange();
+			var selection = window.getSelection();
+			range.setStart(textNode, textNode.length);
+			range.collapse(true);
+			selection.removeAllRanges();
+			selection.addRange(range);
+
+			// Save tasks to localStorage after editing
+			saveTasks();
+		});
+
+		function saveTasks() {
+			var tasks = [];
+			$(".tasktext p").each(function () {
+				tasks.push($(this).text());
+			});
+
+			localStorage.setItem("tasks", JSON.stringify(tasks));
+		}
+
+		function loadTasks() {
+			var storedTasks = localStorage.getItem("tasks");
+			if (storedTasks) {
+				var tasks = JSON.parse(storedTasks);
+				for (var i = 0; i < tasks.length; i++) {
+					srNo++;
+					$('.noTask').hide();
+					var newElement = $('<div id="childTexts" class="tasktext w-100">')
+						.append('<p class="w-100" contenteditable="false">' + tasks[i] + '</p>')
+						.append('<i class="fa-solid fa-pen-to-square w-100 text-success iconevent edit"></i>')
+						.append('<i class="fas fa-times text-danger iconevent remove" style="font-size:28px"></i>')
+					$("#addedtasks").append(newElement);
+				}
+			}
+		}
+	</script>
+</body>
+
+</html>
