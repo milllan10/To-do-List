@@ -101,8 +101,11 @@
 		#addedtasks{
 			width: 50%;
 		}
-		.maininputdiv,.inputdes{
-			width: 70%;
+		.inputdes{
+			width:100%;
+		}
+		.maininputdiv{
+			width: 50%;
 		}
 		form{
 			display: contents;
@@ -111,8 +114,11 @@
 			#addedtasks{
 				width: 80%;
 			}
-			.maininputdiv,.inputdes{
-				width: 90%;
+			.inputdes{
+				width:100%;
+			}
+			.maininputdiv{
+				width: 80%;
 			}
 		}
 		
@@ -132,10 +138,8 @@
 <body>
 	<div class="d-flex justify-content-center flex-column m-auto maininputdiv">
 		<div class="d-flex justify-content-center border m-auto mt-5 gap-3 inputdes">
-			<form action="">
-				<input type="text" name="task" id="task" class="w-100" placeholder="Type Your Task" />
-				<button type="submit" class="btnn"><i class="fa-solid fa-plus"></i></button>
-			</form>
+			<input type="text" name="task" id="task" class="w-100" placeholder="Type Your Task" />
+			<button class="btnn"><i class="fa-solid fa-plus"></i></button>
 		</div>
 		<p style="margin-left: 10px; margin-top: 5px; font-weight: 400" class="text-danger" id="errorMsg">
 			Please type your task first!
@@ -162,6 +166,11 @@
 			$(document).on('click', function() {
 				$('p').prop('contenteditable', false);
 			});
+		});
+		$(document).keydown(function(event) {
+			if (event.keyCode === 13) {
+				$('.btnn').click();
+			}
 		});
 		$("#errorMsg").hide();
 		$(".btnn").on("click", function () {
